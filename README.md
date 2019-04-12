@@ -16,6 +16,9 @@ cache:
   paths:
   - .gradle/
 
+before_script:
+  - chmod +x ./gradlew
+
 build_job:
   stage: build
   script:
