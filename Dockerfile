@@ -9,6 +9,9 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV HOME "/root"
 
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget \
     tar \
@@ -19,7 +22,8 @@ RUN apt-get --quiet install --yes wget \
     patch \
     ruby-dev \
     zlib1g-dev \
-    liblzma-dev
+    liblzma-dev \
+    yarn
 ADD https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip android-sdk.zip
 RUN unzip -d android-sdk-linux android-sdk.zip
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
