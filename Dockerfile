@@ -39,7 +39,8 @@ RUN yes | android-sdk-linux/tools/bin/sdkmanager --licenses
 RUN gem install nokogiri
 # fastlane
 RUN apt-get --quiet install --yes rubygems
-RUN gem install fastlane --version 2.120.0 --no-document
+RUN gem install fastlane --version 2.141.0 --no-document
 ENV GRADLE_USER_HOME=$PWD/.gradle
+RUN yarn global add firebase-tools
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
