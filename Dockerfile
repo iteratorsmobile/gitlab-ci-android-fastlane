@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ENV HOME "/root"
 
-RUN curl -sL https://deb.nodesource.com/setup_11.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_13.x | bash - \
     && apt-get install -y nodejs
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
