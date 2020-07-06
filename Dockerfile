@@ -1,9 +1,9 @@
 FROM openjdk:8-jdk
 LABEL maintainer="Iterators Mobile <mobile@iterato.rs>"
 
-ENV ANDROID_COMPILE_SDK "28"
-ENV ANDROID_BUILD_TOOLS "28.0.3"
-ENV ANDROID_SDK_TOOLS "4333796"
+ENV ANDROID_COMPILE_SDK "29"
+ENV ANDROID_BUILD_TOOLS "29.0.3"
+ENV ANDROID_SDK_TOOLS "6609375"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -27,7 +27,7 @@ RUN apt-get --quiet install --yes wget \
     zlib1g-dev \
     liblzma-dev \
     yarn
-ADD https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip android-sdk.zip
+ADD https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip android-sdk.zip
 RUN unzip -d android-sdk-linux android-sdk.zip
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
@@ -39,7 +39,7 @@ RUN yes | android-sdk-linux/tools/bin/sdkmanager --licenses
 RUN gem install nokogiri
 # fastlane
 RUN apt-get --quiet install --yes rubygems
-RUN gem install fastlane --version 2.141.0 --no-document
+RUN gem install fastlane --version 2.150.3 --no-document
 ENV GRADLE_USER_HOME=$PWD/.gradle
 RUN yarn global add firebase-tools
 
