@@ -17,6 +17,13 @@ RUN echo "deb http://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.
 
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget \
+    libX11 \
+    libgl1 \
+    libnss \
+    libnss3 \
+    libxcomposite1 \
+    libxcursor1 \
+    libasound2 \
     tar \
     unzip \
     lib32stdc++6 \
@@ -30,8 +37,11 @@ RUN apt-get --quiet install --yes wget \
 ADD https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip android-sdk.zip
 RUN unzip -d android-sdk-linux android-sdk.zip
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
-RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
+RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" "platforms;android-${ANDROID_COMPILE_SDK}" "emulator" >/dev/null
 RUN echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
+RUN echo y | android-sdk-linux/tools/bin/sdkmanager "system-images;android-${ANDROID_BUILD_TOOLS};default;armeabi-v7a" >/dev/null
+RUN echo y | android-sdk-linux/tools/bin/avdmanager create avd -n emuTest -k "system-images;android-${ANDROID_BUILD_TOOLS};google_apis;x86_64" >/dev/null
+RUN echo y | android-sdk-linux/tools/bin/emulator -avd emuTest -noaudio -no-boot-anim -gpu off >/dev/null
 ENV ANDROID_HOME=$PWD/android-sdk-linux
 ENV PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
 RUN yes | android-sdk-linux/tools/bin/sdkmanager --licenses
