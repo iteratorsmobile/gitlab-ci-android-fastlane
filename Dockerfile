@@ -1,20 +1,17 @@
 FROM openjdk:8-jdk
 LABEL maintainer="Iterators Mobile <mobile@iterato.rs>"
 
-ENV ANDROID_COMPILE_SDK "28"
-ENV ANDROID_BUILD_TOOLS "28.0.3"
-ENV ANDROID_SDK_TOOLS "4333796"
-
 ENV DEBIAN_FRONTEND noninteractive
-
 ENV HOME "/root"
 
+#node
 RUN curl -sL https://deb.nodesource.com/setup_13.x | bash - \
     && apt-get install -y nodejs
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb http://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
+#tools
 RUN apt-get --quiet update --yes
 RUN apt-get --quiet install --yes wget \
     tar \
@@ -27,19 +24,41 @@ RUN apt-get --quiet install --yes wget \
     zlib1g-dev \
     liblzma-dev \
     yarn
-ADD https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS}.zip android-sdk.zip
-RUN unzip -d android-sdk-linux android-sdk.zip
-RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
-RUN echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
-RUN echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
-ENV ANDROID_HOME=$PWD/android-sdk-linux
-ENV PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
-RUN yes | android-sdk-linux/tools/bin/sdkmanager --licenses
-# nokogiri (Failed to build gem native extension while installing fastlane fix)
-RUN gem install nokogiri
+
+#android
+ENV ANDROID_COMPILE_SDK "30"
+ENV ANDROID_BUILD_TOOLS "30.0.2"
+ENV ANDROID_SDK_TOOLS "7302050"
+
+ENV ANDROID_SDK_ROOT=/android-sdk-linux
+ENV ANDROID_HOME=/android-sdk-linux
+
+RUN wget -q https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip -O android-commandline-tools.zip \
+    && mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools \
+    && unzip -q android-commandline-tools.zip -d /tmp/ \
+    && mv /tmp/cmdline-tools ${ANDROID_SDK_ROOT}/cmdline-tools/latest \
+    && rm android-commandline-tools.zip
+
+ENV PATH ${PATH}:${ANDROID_SDK_ROOT}:${ANDROID_SDK_ROOT}/platform-tools:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin
+
+RUN yes | sdkmanager --update
+RUN yes | sdkmanager --licenses
+RUN yes | sdkmanager \
+    "patcher;v4" \
+    "platforms;android-${ANDROID_COMPILE_SDK}" \
+    "emulator" \
+    "build-tools;${ANDROID_BUILD_TOOLS}" \
+    "tools" \
+    "platform-tools" 
+
 # fastlane
 RUN apt-get --quiet install --yes rubygems
-RUN gem install fastlane --version 2.141.0 --no-document
+## nokogiri, rake, rubocop (Failed to build gem native extension while installing fastlane fix)
+RUN gem install nokogiri
+RUN gem install rake
+RUN gem install rubocop
+RUN gem install fastlane --version 2.183.2 --no-document
+
 ENV GRADLE_USER_HOME=$PWD/.gradle
 RUN yarn global add firebase-tools
 
