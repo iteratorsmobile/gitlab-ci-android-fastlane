@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV HOME "/root"
 
 #node
-RUN curl -sL https://deb.nodesource.com/setup_13.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_15.x | bash - \
     && apt-get install -y nodejs
 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
@@ -57,6 +57,7 @@ RUN apt-get --quiet install --yes rubygems
 RUN gem install nokogiri
 RUN gem install rake
 RUN gem install rubocop
+RUN gem install bundler
 RUN gem install fastlane --version 2.183.2 --no-document
 
 ENV GRADLE_USER_HOME=$PWD/.gradle
