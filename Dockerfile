@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk
+FROM openjdk:11-jdk
 LABEL maintainer="Iterators Mobile <mobile@iterato.rs>"
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -26,7 +26,7 @@ RUN apt-get --quiet install --yes wget \
     yarn
 
 #android
-ENV ANDROID_COMPILE_SDK "30"
+ENV ANDROID_COMPILE_SDK "31"
 ENV ANDROID_BUILD_TOOLS "30.0.2"
 ENV ANDROID_SDK_TOOLS "7302050"
 
