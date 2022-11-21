@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk
+FROM openjdk:11.0.12-jdk
 LABEL maintainer="Iterators Mobile <mobile@iterato.rs>"
 
 ENV DEBIAN_FRONTEND noninteractive
