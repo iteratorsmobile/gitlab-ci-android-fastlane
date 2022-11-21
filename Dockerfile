@@ -28,7 +28,7 @@ RUN apt-get --quiet install --yes wget \
 #android
 ENV ANDROID_COMPILE_SDK "31"
 ENV ANDROID_BUILD_TOOLS "31.0.0"
-ENV ANDROID_SDK_TOOLS "8092744"
+ENV ANDROID_SDK_TOOLS "7302050"
 
 ENV ANDROID_SDK_ROOT=/android-sdk-linux
 ENV ANDROID_HOME=/android-sdk-linux
